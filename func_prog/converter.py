@@ -1,5 +1,5 @@
 from collections import namedtuple, OrderedDict
-from pipe import func_pipe
+from .pipe import func_pipe
 
 
 @func_pipe

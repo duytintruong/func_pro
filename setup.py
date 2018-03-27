@@ -2,7 +2,7 @@ from distutils.core import setup
 setup(
     name='func_prog',
     packages=['func_prog'],
-    version='0.1',
+    version='0.1.1',
     description='A library supporting functional programming',
     author='Duy Tin Truong',
     author_email='',

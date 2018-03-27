@@ -1,5 +1,4 @@
 from functools import partial, reduce
-import numpy as np
 
 
 class func_pipe(object):

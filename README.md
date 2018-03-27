@@ -363,4 +363,4 @@ i = 1, y = 2
 i = 2, y = 2
 ```
 
-which means the function `add_1` is called to compute the result for `x=` only once.
+which means the function `add_1` is called to compute the result for `x=1` only once.

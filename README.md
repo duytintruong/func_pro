@@ -1,4 +1,11 @@
-# `func_prog` is a library supporting functional programming in Python.
+# A library supporting functional programming in Python.
+## Tested environments
+    Tested on `Python 3.6.3`.
+## Installation
+    Install with pip as follows:
+    ```python
+        pip install func_prog
+    ```
 
 # `func_pipe` decorator
 This decorator turns a function or an object method into a `func_pipe` object and then you can pass arguments to it in different ways which are convenient to build pipelines later.
@@ -51,7 +58,7 @@ y = add_1(1)
 
 ## Unpacking argument passing
 ### Unpacking a tuple of arguments
-You can pass a tuple of arguments and unpack them while passing to a `func_pipe` object by using the operator `>>`. For example:
+You can pass a tuple of arguments and unpack them when passing to a `func_pipe` object by using the operator `>>`. For example:
 
 ```python
 @func_pipe
@@ -60,7 +67,7 @@ def my_sum(x, y, z):
 y = (1, 2, 3) >> my_sum
 ```
 
-which is equivalent to:
+is equivalent to:
 ```python
 def my_sum(x, y, z):
     return x + y + z
@@ -68,7 +75,7 @@ y = my_sum(1, 2, 3)
 ```
 
 ### Unpacking a dictionary of arguments
-You can also pass a dictionary of arguments and unpack them while passing to a `func_pipe` object by using the operator `>>`. For example:
+You can also pass a dictionary of arguments and unpack them when passing to a `func_pipe` object by using the operator `>>`. For example:
 
 ```python
 from func_prog.pipe import func_pipe
@@ -78,7 +85,7 @@ def my_sum(x, y, z):
 y = {'x': 1, 'y': 2, 'z': 3} >> my_sum
 ```
 
-which is equivalent to:
+is equivalent to:
 
 ```python
 def my_sum(x, y, z):
@@ -245,3 +252,26 @@ y = map(lambda x: x + 1, (1, 2, 3))
 
 The same principle is applied for `reduce_pipe` and `filter_pipe`.
 
+# `ConstantInstanceVariables` class
+Sometimes, you want to force all instance variables to be constants or cannot be reassigned so that you guarantee that there is no place in you code changing those variables to avoid some bugs. This can be done by subclassing the `ConstantInstanceVariables`.
+
+For example, the following code:
+
+```python
+from func_prog.constant import ConstantInstanceVariables
+class MyClass(ConstantInstanceVariables):
+    def __init__(self, value):
+        self._value = value
+    def main(self):
+        self._value = 1
+
+MyClass(10).main()
+```
+
+will raise the error
+
+```python
+ConstantError: Cannot rebind constant "_value"
+```
+
+as I am trying to rebind the instance variable `self._value` in the main method.

@@ -1,7 +1,7 @@
 from unittest import TestCase
 import pytest
 
-from constant import (
+from func_prog.constant import (
     ConstantInstanceVariables,
     ConstantError,
 )

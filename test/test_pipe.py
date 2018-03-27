@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from pipe import (
+from func_prog.pipe import (
     func_pipe, pipe_class,
     chain_pipe, map_pipe,
     filter_pipe, reduce_pipe

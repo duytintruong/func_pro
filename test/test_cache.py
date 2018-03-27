@@ -1,5 +1,5 @@
 import unittest
-from cache import func_cache
+from func_prog.cache import func_cache
 
 
 @func_cache

@@ -2,10 +2,11 @@
 ## Tested environments
     Tested on `Python 3.6.3`.
 ## Installation
-    Install with pip as follows:
-    ```python
-        pip install func_prog
-    ```
+Install with pip as follows:
+
+```python
+    pip install func_prog
+```
 
 # `func_pipe` decorator
 This decorator turns a function or an object method into a `func_pipe` object and then you can pass arguments to it in different ways which are convenient to build pipelines later.

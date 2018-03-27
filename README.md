@@ -94,7 +94,7 @@ def my_sum(x, y, z):
 y = my_sum(x=1, y=2, z=3)
 ```
 
-## Partial apply a `func_pipe` object
+## Partially apply a `func_pipe` object
 You can partially apply a `func_pipe` object as follows:
 
 ```python

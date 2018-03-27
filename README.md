@@ -1,1 +1,247 @@
-# func_prog
+# `func_prog` is a library supporting functional programming in Python.
+
+# `func_pipe` decorator
+This decorator turns a function or an object method into a `func_pipe` object and then you can pass arguments to it in different ways which are convenient to build pipelines later.
+
+
+Let's see an example. Assume that you have the following functions decorated with `func_pipe`:
+
+```python
+from func_prog.pipe import chain_pipe
+@func_pipe
+def add_1(x):
+    return x + 1
+
+@func_pipe
+def multiply_2(x):
+    return x * 2
+
+@func_pipe
+def subtract_3(x):
+    return x - 3
+```
+
+Then you can write a pipeline like this:
+
+```python
+y = 1 | add_1 | multiply_2 | subtract_3
+```
+
+which is equivalent to:
+
+```python
+y = subtract_3(
+        multiply_2(
+            add_1(1)))
+```
+
+Note that a `func_pipe` object is callable, so you can use it as a normal function if you need as the above code.
+
+## Plain argument passing
+The first way to pass an argument to a `func_pipe` object is to use the operator `|` as you see above:
+
+```python
+y = 1 | add_1
+```
+
+which is equivalent to:
+```python
+y = add_1(1)
+```
+
+## Unpacking argument passing
+### Unpacking a tuple of arguments
+You can pass a tuple of arguments and unpack them while passing to a `func_pipe` object by using the operator `>>`. For example:
+
+```python
+@func_pipe
+def my_sum(x, y, z):
+    return x + y + z
+y = (1, 2, 3) >> my_sum
+```
+
+which is equivalent to:
+```python
+def my_sum(x, y, z):
+    return x + y + z
+y = my_sum(1, 2, 3)
+```
+
+### Unpacking a dictionary of arguments
+You can also pass a dictionary of arguments and unpack them while passing to a `func_pipe` object by using the operator `>>`. For example:
+
+```python
+from func_prog.pipe import func_pipe
+@func_pipe
+def my_sum(x, y, z):
+    return x + y + z
+y = {'x': 1, 'y': 2, 'z': 3} >> my_sum
+```
+
+which is equivalent to:
+
+```python
+def my_sum(x, y, z):
+    return x + y + z
+y = my_sum(x=1, y=2, z=3)
+```
+
+## Partial apply a `func_pipe` object
+You can partially apply a `func_pipe` object as follows:
+
+```python
+from func_prog.pipe import func_pipe
+@func_pipe
+def my_sum(x, y, z):
+    return x + y + z
+y = (1, 2) >> my_sum.partial(z=3)
+```
+
+and that is equivalent to:
+
+```python
+def my_sum(x, y, z):
+    return x + y + z
+y = my_sum(x=1, y=2, z=3)
+```
+
+The same way is applied for keyword parameters.
+
+```python
+from func_prog.pipe import func_pipe
+@func_pipe
+def my_sum(x, y, z):
+    return x + y + z
+y = {'x': 1, 'y': 2} >> my_sum.partial(z=3)
+```
+
+# Function composition as a function chain
+Assume that you have the following functions:
+
+```python
+def add_1(x):
+    return x + 1
+
+def multiply_2(x):
+    return x * 2
+
+def subtract_3(x):
+    return x - 3
+```
+
+and you want to compose them to calculate a value:
+
+```python
+y = subtract_3(
+        multiply_2(
+            add_1(1)))
+```
+
+You compute `y` by adding 1 to `x=1`, then multiplying the result by 2, and finally subtracting the previous result by 3 but you write the code in the following order: `subtract_3`, `multiply_2`, and `add_1`. With the helper `func_prog.pipe.chain_pipe`, we can rewrite it a more natural order:
+
+```python
+from func_prog.pipe import chain_pipe
+y = 1 | chain_pipe(add_1, multiply_2, subtract_3)
+```
+
+The third last in the above code will do exactly the same thing as the way we compose three functions but it is much easier to read.
+Another advantage of `chain_pipe` is that you can chain the `lambda` functions:
+
+```python
+from func_prog.pipe import chain_pipe
+y = 1 | chain_pipe(
+    lambda x: x + 1,
+    lambda x: x * 2,
+    lambda x: x - 3
+)
+```
+
+You can also control how to pass the arguments between the functions in the chain pipe by setting the keyword parameter `unpacked` (default `False`). The meaning of unpacking arguments while passing is described in the section of `func_pipe`.
+For example, the following code:
+
+```python
+from func_prog.pipe import chain_pipe
+y = (1, 2) >> chain_pipe(
+    lambda x: x + 1, x + 2,
+    lambda x, y: x * 2, y * 2,
+    lambda x, y: x - 3, y - 3,
+    unpacked=True
+)
+```
+
+is equivalent to:
+
+```python
+def add_1_2(x, y):
+    return x + 1, y + 2
+
+def multiply_2(x, y):
+    return x * 2, y * 2
+
+def subtract_3(x, y):
+    return x - 3, y - 3
+y = subtract_3(
+        *multiply_2(
+            *add_1_2(1, 2)))
+```
+
+# `pipe_class` decorator
+This decorator will turns all instance methods into `func_pipe` objects that you can use to build pipelines later.
+
+For example:
+
+```python
+from func_prog.pipe import pipe_class
+
+@pipe_class
+class MyClass(object):
+    def add_1(self, x):
+        return x + 1
+
+    def multiply_2(self, x):
+        return x * 2
+
+    def subtract_3(self, x):
+        return x - 3
+
+    def main(self):
+        y = 1 | self.add_1 | self.multiply_2 | self.subtract_3
+```
+
+is equivalent to:
+
+```python
+class MyClass(object):
+    def add_1(self, x):
+        return x + 1
+
+    def multiply_2(self, x):
+        return x * 2
+
+    def subtract_3(self, x):
+        return x - 3
+
+    def main(self):
+        y = self.subtract_3(
+            self.multiply_2(
+                self.add_1(1)))
+```
+
+# `map_pipe`, `reduce_pipe`, `filter_pipe` function
+Those are helpers for writing codes with traditional `map`, `reduce`, `filter` functions in a more readable way. The `map_pipe` function accepts a function which is the function will be applied on all elements of an array and return a `func_pipe` object that you can use to build pipelines later.
+For example:
+
+The following code
+
+```python
+from func_prog.pipe import map_pipe
+y = (1, 2, 3) | map_pipe(lambda x: x + 1)
+```
+
+is equivalent to:
+```python
+y = map(lambda x: x + 1, (1, 2, 3))
+```
+
+The same principle is applied for `reduce_pipe` and `filter_pipe`.
+

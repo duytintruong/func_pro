@@ -276,7 +276,7 @@ ConstantError: Cannot rebind constant "_value"
 
 as I am trying to rebind the instance variable `self._value` in the main method.
 
-# Converting helpers
+# Converting return results into constant objects
 
 When a function returns a tuple of results, the code using this result will need to know the position of each arguments in the tuple result.
 For example:
@@ -295,7 +295,7 @@ It is much easier to use the result if we combine the result variables into an i
 
 ```python
 from func_prog.converter import vars_to_object
-def add_1(x, y, x):
+def add_1(x, y, z):
     x_prime = x + 1
     y_prime = y + 1
     z_prime = z + 1
@@ -305,3 +305,61 @@ y_prime = add_1(1, 2, 3).y_prime
 ```
 
 Remember to add the part `local_dict=locals()` when calling the function `vars_to_object`.
+
+You can also convert a dictionary to an object or a `zip` pair. For example:
+
+```python
+from func_prog.converter import dict_to_object
+def add_1(x, y, z):
+    x_prime = x + 1
+    y_prime = y + 1
+    z_prime = z + 1
+    return dict_to_object({
+        'x_prime': x_prime,
+        'y_prime': y_prime,
+        'z_prime': z_prime
+    })
+
+y_prime = add_1(1, 2, 3).y_prime
+```
+
+or
+
+```python
+from func_prog.converter import zip_to_object
+def add_1(x, y, z):
+    x_prime = x + 1
+    y_prime = y + 1
+    z_prime = z + 1
+    return zip_to_object(
+        ('x_prime', 'y_prime', 'z_prime'),
+        (x_prime, y_prime, z_prime))
+
+y_prime = add_1(1, 2, 3).y_prime
+```
+
+# Caching a function result
+Sometimes, it is useful to cache the result of a heavily computing function (or instance method). You can cache a function result by using the decorator `func_prog.cache.func_cache` as follows:
+
+```python
+from func_prog.cache import func_cache
+@func_cache
+def add_1(x):
+    print(f'calling add_1 on x={x}')
+    return x + 1
+
+for i in range(3):
+    y = add_1(1)
+    print(f'i = {i}, y = {y}')
+```
+
+You will see the following result:
+
+```python
+calling add_1 on x=1
+i = 0, y = 2
+i = 1, y = 2
+i = 2, y = 2
+```
+
+which means the function `add_1` is called to compute the result for `x=` only once.

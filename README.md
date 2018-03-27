@@ -253,7 +253,7 @@ y = map(lambda x: x + 1, (1, 2, 3))
 The same principle is applied for `reduce_pipe` and `filter_pipe`.
 
 # `ConstantInstanceVariables` class
-Sometimes, you want to force all instance variables to be constants or cannot be reassigned so that you guarantee that there is no place in you code changing those variables to avoid some bugs. This can be done by subclassing the `ConstantInstanceVariables`.
+Sometimes, you want to force all instance variables to be constants or cannot be reassigned so that you guarantee that there is no place in you code changing those variables to avoid some bugs. This can be done by subclassing the class `ConstantInstanceVariables`.
 
 For example, the following code:
 
@@ -275,3 +275,33 @@ ConstantError: Cannot rebind constant "_value"
 ```
 
 as I am trying to rebind the instance variable `self._value` in the main method.
+
+# Converting helpers
+
+When a function returns a tuple of results, the code using this result will need to know the position of each arguments in the tuple result.
+For example:
+
+```python
+def add_1(x, y, x):
+    x_prime = x + 1
+    y_prime = y + 1
+    z_prime = z + 1
+    return x_prime, y_prime, z_prime
+
+y_prime = add_1(1, 2, 3)[1]
+```
+
+It is much easier to use the result if we combine the result variables into an immutable object. For example:
+
+```python
+from func_prog.converter import vars_to_object
+def add_1(x, y, x):
+    x_prime = x + 1
+    y_prime = y + 1
+    z_prime = z + 1
+    return vars_to_object(x_prime, y_prime, z_prime, local_dict=locals())
+
+y_prime = add_1(1, 2, 3).y_prime
+```
+
+Remember to add the part `local_dict=locals()` when calling the function `vars_to_object`.

@@ -1,11 +1,11 @@
 # A library supporting functional programming in Python.
 ## Tested environments
-    Tested on `Python 3.6.3`.
+Tested on `Python 3.6.3`.
 ## Installation
 Install with pip as follows:
 
 ```python
-    pip install func_prog
+pip install func_prog
 ```
 
 # `func_pipe` decorator

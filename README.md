@@ -49,12 +49,18 @@ Note that a `func_pipe` object is callable, so you can use it as a normal functi
 The first way to pass an argument to a `func_pipe` object is to use the operator `|` as you see above:
 
 ```python
-y = 1 | add_1
+from func_prog.pipe import func_pipe
+@func_pipe
+def sum_all(array):
+    return sum(array)
+y = (1, 2, 3) | sum_all
 ```
 
 which is equivalent to:
 ```python
-y = add_1(1)
+def sum_all(array):
+    return sum(array)
+y = sum_all((1, 2, 3))
 ```
 
 ## Unpacking argument passing

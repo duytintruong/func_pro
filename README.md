@@ -100,6 +100,19 @@ def my_sum(x, y, z):
 y = my_sum(x=1, y=2, z=3)
 ```
 
+### Passing `numpy.ndarray`, `pandas.DataFrame` objects and other objects having definitions for operators `|` or `>>`
+Because `numpy.ndarray` and `pandas.DataFrame` classes define the `|` and `>>` operators, so to pass their objects to a `func_pipe` object, you need to wrap them in a tuple and passing with unpacking operator `>>`. For example:
+
+```python
+import numpy as np
+from func_prog.pipe import func_pipe
+@func_pipe
+def my_sum(array):
+    return sum(array)
+y = (np.array((1, 2, 3)), ) >> my_sum
+```
+
+
 ## Partially apply a `func_pipe` object
 You can partially apply a `func_pipe` object as follows:
 

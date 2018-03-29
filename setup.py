@@ -7,7 +7,7 @@ setup(
     author='Duy Tin Truong',
     author_email='',
     url='https://github.com/duytintruong/func_prog',
-    download_url='https://github.com/duytintruong/func_prog/archive/0.1.tar.gz',
+    download_url='https://github.com/duytintruong/func_prog/archive/0.1.1.tar.gz',
     keywords=['functional programming', 'pipeline', 'data'],
     classifiers=[],
 )

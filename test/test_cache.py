@@ -23,7 +23,7 @@ class TestCache(unittest.TestCase):
             self.assertEqual(result, 3)
             self.assertEqual(
                 tuple(func._cache.values())[0],
-                {"((1, 2),){'a_dict': {'x': 2}}": 3})
+                3)
 
     def test_method_cache(self):
         obj = ExampleClass()
@@ -33,4 +33,4 @@ class TestCache(unittest.TestCase):
             self.assertEqual(result, 3)
             self.assertEqual(
                 tuple(obj.method._cache.values())[0],
-                {"((1, 2),){'a_dict': {'x': 2}}" : 3})
+                3)

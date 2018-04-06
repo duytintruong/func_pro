@@ -1,6 +1,3 @@
-from collections import defaultdict
-
-
 class func_cache(object):
     '''
         A decorator to cache the function or method result.
@@ -10,18 +7,19 @@ class func_cache(object):
         self._function_self = None
         self.__doc__ = function.__doc__
         self.__name__ = function.__name__
-        self._cache = defaultdict(dict)
+        self._cache = {}
 
     def __call__(self, *args, **kwargs):
-        key = str(args) + str(kwargs)
+        obj_key = id(self._function_self)
+        param_key = str(args) + str(kwargs)
+        key = str(obj_key) + '-' + param_key
         if key not in self._cache:
             if self._function_self:
-                obj_key = id(self._function_self)
-                self._cache[obj_key][key] = self._function(self._function_self, *args, **kwargs)
+                self._cache[key] = self._function(
+                    self._function_self, *args, **kwargs)
             else:
-                obj_key = 'None'
-                self._cache[obj_key][key] = self._function(*args, **kwargs)
-        return self._cache[obj_key][key]
+                self._cache[key] = self._function(*args, **kwargs)
+        return self._cache[key]
 
     def __get__(self, instance, owner):
         self._function_self = instance

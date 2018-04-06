@@ -21,7 +21,9 @@ class TestCache(unittest.TestCase):
         for _ in range(3):
             result = func((1, 2), a_dict={'x': 2})
             self.assertEqual(result, 3)
-            self.assertEqual(func._cache, {"((1, 2),){'a_dict': {'x': 2}}": 3})
+            self.assertEqual(
+                tuple(func._cache.values())[0],
+                {"((1, 2),){'a_dict': {'x': 2}}": 3})
 
     def test_method_cache(self):
         obj = ExampleClass()
@@ -29,4 +31,6 @@ class TestCache(unittest.TestCase):
         for _ in range(3):
             result = obj.method((1, 2), a_dict={'x': 2})
             self.assertEqual(result, 3)
-            self.assertEqual(obj.method._cache, {"((1, 2),){'a_dict': {'x': 2}}" : 3})
+            self.assertEqual(
+                tuple(obj.method._cache.values())[0],
+                {"((1, 2),){'a_dict': {'x': 2}}" : 3})

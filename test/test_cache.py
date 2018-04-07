@@ -10,7 +10,7 @@ def func(a_tuple, a_dict):
 
 class ExampleClass(object):
     @func_cache
-    def method(self, a_tuple, a_dict):
+    def _method(self, a_tuple, a_dict):
         print('computing for method')
         return a_tuple[0] + a_dict['x']
 
@@ -27,10 +27,10 @@ class TestCache(unittest.TestCase):
 
     def test_method_cache(self):
         obj = ExampleClass()
-        self.assertEqual(obj.method._cache, {})
+        self.assertEqual(obj.__dict__[obj._method._cache_name], {})
         for _ in range(3):
-            result = obj.method((1, 2), a_dict={'x': 2})
+            result = obj._method((1, 2), a_dict={'x': 2})
             self.assertEqual(result, 3)
             self.assertEqual(
-                tuple(obj.method._cache.values())[0],
+                tuple(obj.__dict__[obj._method._cache_name].values())[0],
                 3)

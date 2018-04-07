@@ -7,20 +7,25 @@ class func_cache(object):
         self._function_self = None
         self.__doc__ = function.__doc__
         self.__name__ = function.__name__
+        self._cache_name = f'_{function.__name__}_cache_'
         self._cache = {}
 
     def __call__(self, *args, **kwargs):
-        obj_key = id(self._function_self)
-        param_key = str(args) + str(kwargs)
-        key = str(obj_key) + '-' + param_key
-        if key not in self._cache:
+        if self._function_self:
+            cache = self._function_self.__dict__[self._cache_name]
+        else:
+            cache = self._cache
+        key = str(args) + str(kwargs)
+        if key not in cache:
             if self._function_self:
-                self._cache[key] = self._function(
+                cache[key] = self._function(
                     self._function_self, *args, **kwargs)
             else:
-                self._cache[key] = self._function(*args, **kwargs)
-        return self._cache[key]
+                cache[key] = self._function(*args, **kwargs)
+        return cache[key]
 
     def __get__(self, instance, owner):
         self._function_self = instance
+        if self._cache_name not in instance.__dict__:
+            instance.__dict__[self._cache_name] = {}
         return self

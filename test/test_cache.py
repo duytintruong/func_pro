@@ -24,6 +24,8 @@ class TestCache(unittest.TestCase):
             self.assertEqual(
                 tuple(func._cache.values())[0],
                 3)
+        func.clear()
+        self.assertEqual(func._cache, {})
 
     def test_method_cache(self):
         obj = ExampleClass()
@@ -34,3 +36,5 @@ class TestCache(unittest.TestCase):
             self.assertEqual(
                 tuple(obj.__dict__[obj._method._cache_name].values())[0],
                 3)
+        obj._method.clear()
+        self.assertEqual(obj.__dict__[obj._method._cache_name], {})

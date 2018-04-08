@@ -29,3 +29,9 @@ class func_cache(object):
         if self._cache_name not in instance.__dict__:
             instance.__dict__[self._cache_name] = {}
         return self
+
+    def clear(self):
+        if self._function_self:
+            self._function_self.__dict__[self._cache_name] = {}
+        else:
+            self._cache = {}
